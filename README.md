@@ -1,2 +1,2 @@
-# genkey-api
-API for genkey analyzer made by semilin
+# Genkey API
+API for [genkey analyzer](https://github.com/semilin/genkey) made by @semilin
