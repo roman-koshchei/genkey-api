@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	genkey "github.com/roman-koshchei/genkey-api/pkg"
@@ -36,6 +37,12 @@ func Run() {
 	router := gin.New()
 	router.Use(gin.Recovery()) // if panic return 500
 
-	router.GET("/", getAnalysis) // was :keys:fingers
-	router.Run(":8080")
+	router.GET("/", getAnalysis)
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	router.Run(":" + port)
 }
