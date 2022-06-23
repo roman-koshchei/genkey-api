@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"math"
 	"os"
 	"sort"
@@ -13,18 +12,8 @@ import (
 	. "github.com/roman-koshchei/genkey-api/structs"
 )
 
-type TextData struct {
-	Letters      map[string]int     `json:"letters"`
-	Bigrams      map[string]int     `json:"bigrams"`
-	Trigrams     map[string]int     `json:"trigrams"`
-	TopTrigrams  []FreqPair         `json:"toptrigrams"`
-	Skipgrams    map[string]float64 `json:"skipgrams"`
-	TotalBigrams int
-	Total        int
-}
-
 func loadData() TextData {
-	b, err := ioutil.ReadFile("../configs/data.json")
+	b, err := os.ReadFile("config/data.json") //ioutil.ReadFile("data.json")
 	if err != nil {
 		panic(err)
 	}

@@ -172,6 +172,9 @@ func loadLayout(keys string, fingers string) Layout {
 		start += length
 	}
 
+	start = 0
+	end = 0
+
 	layout.Fingermatrix = make(map[Pos]Finger, 3)
 	layout.Fingermap = make(map[Finger][]Pos)
 	for row, length := range lengths {
