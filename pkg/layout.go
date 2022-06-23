@@ -191,6 +191,8 @@ func loadLayout(keys string, fingers string) Layout {
 		start += length
 	}
 
+	layout.Keymap = GenKeymap(layout.Keys) // md delete
+
 	return layout
 }
 
@@ -816,4 +818,44 @@ func twoKeyDist(a, b Pos, weighted bool) float64 {
 		dist = math.Sqrt((x * x) + (y * y))
 	}
 	return dist
+}
+
+func Score(l Layout) float64 {
+	var score float64
+	s := &Weight.Score
+	if s.FSpeed != 0 {
+		var speeds []float64
+		if !DynamicFlag {
+			speeds = FingerSpeed(&l, true)
+		} else {
+			speeds = DynamicFingerSpeed(&l, true)
+		}
+		total := 0.0
+		for _, s := range speeds {
+			total += s
+		}
+		score += s.FSpeed * total
+	}
+	if s.LSB != 0 {
+		score += s.LSB * 100 * float64(LSBs(l)) / l.Total
+	}
+	if s.TrigramPrecision != -1 {
+		tri := FastTrigrams(l, s.TrigramPrecision)
+		score += s.LeftInwardRoll * (100 - (100 * float64(tri.LeftInwardRolls) / float64(tri.Total)))
+		score += s.RightInwardRoll * (100 - (100 * float64(tri.RightInwardRolls) / float64(tri.Total)))
+		score += s.LeftOutwardRoll * (100 - (100 * float64(tri.LeftOutwardRolls) / float64(tri.Total)))
+		score += s.RightOutwardRoll * (100 - (100 * float64(tri.RightOutwardRolls) / float64(tri.Total)))
+		score += s.Alternate * (100 - (100 * float64(tri.Alternates) / float64(tri.Total)))
+		score += s.Onehand * (100 - (100 * float64(tri.Onehands) / float64(tri.Total)))
+		score += s.Redirect * (100 * float64(tri.Redirects) / float64(tri.Total))
+	}
+
+	if s.IndexBalance != 0 {
+		left, right := IndexUsage(l)
+		score += s.IndexBalance * math.Abs(right-left)
+	}
+
+	Analyzed++
+
+	return score
 }

@@ -6,31 +6,31 @@ package structs
 type Analysis struct {
 	// for overall rolls just get sum
 	// Left rolls
-	LeftInwardRolls  float32 `json:"leftInwardRolls"`
-	LeftOutwardRolls float32 `json:"leftOutwardRolls"`
+	LeftInwardRolls  float64 `json:"leftInwardRolls"`
+	LeftOutwardRolls float64 `json:"leftOutwardRolls"`
 
 	// right rolls
-	RightInwardRolls  float32 `json:"rightInwardRolls"`
-	RightOutwardRolls float32 `json:"rightOutwardRolls"`
+	RightInwardRolls  float64 `json:"rightInwardRolls"`
+	RightOutwardRolls float64 `json:"rightOutwardRolls"`
 
-	Alternates float32 `json:"alternates"`
-	Onehands   float32 `json:"onehands"`
-	Redirects  float32 `json:"redirects"`
+	Alternates float64 `json:"alternates"`
+	Onehands   float64 `json:"onehands"`
+	Redirects  float64 `json:"redirects"`
 
-	WeightedFingerSpeed    float32 `json:"weightedFingerSpeed"`
-	UnweightedFingerSpeed  float32 `json:"unweightedFingerSpeed"`
-	WeightedHighestSpeed   float32 `json:"weightedHighestSpeed"`
-	UnweightedHighestSpeed float32 `json:"unweightedHighestSpeed"`
+	WeightedFingerSpeed    []float64 `json:"weightedFingerSpeed"`
+	UnweightedFingerSpeed  []float64 `json:"unweightedFingerSpeed"`
+	WeightedHighestSpeed   float64   `json:"weightedHighestSpeed"`
+	UnweightedHighestSpeed float64   `json:"unweightedHighestSpeed"`
 
-	LeftIndexUsage  float32 `json:"leftIndexUsage"`
-	RightIndexUsage float32 `json:"rightIndexUsage"`
+	LeftIndexUsage  float64 `json:"leftIndexUsage"`
+	RightIndexUsage float64 `json:"rightIndexUsage"`
 
-	Sfbs  float32 `json:"sfbs"`
-	Dsfbs float32 `json:"dsfbs"`
-	Lsbs  float32 `json:"lsbs"`
+	Sfbs  float64 `json:"sfbs"`
+	Dsfbs float64 `json:"dsfbs"`
+	Lsbs  float64 `json:"lsbs"`
 
 	TopSfbs      []FreqPair `json:"topSfbs"`
 	WorstBigrams []FreqPair `json:"worstBigrams"`
 
-	Score float32 `json:"score"`
+	Score float64 `json:"score"`
 }
