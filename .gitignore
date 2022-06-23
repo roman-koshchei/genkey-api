@@ -1,0 +1,10 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+
+# vscode
+.bash_history
+.vscode/
+.vscode/*
+.history/
