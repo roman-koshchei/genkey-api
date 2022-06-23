@@ -36,31 +36,34 @@ func Analyze(keys string, fingers string) Analysis {
 	weighted = FingerSpeed(&layout, true)
 	unweighted = FingerSpeed(&layout, false)
 
-	// var highestUnweightedFinger string
+	var highestUnweightedFinger string
 	var highestUnweighted float64
 	var utotal float64
 
-	// var highestWeightedFinger string
+	var highestWeightedFinger string
 	var highestWeighted float64
 	var wtotal float64
 	for i := 0; i < 8; i++ {
 		utotal += unweighted[i]
 		if unweighted[i] > highestUnweighted {
 			highestUnweighted = unweighted[i]
-			// highestUnweightedFinger = FingerNames[i]
+			highestUnweightedFinger = FingerNames[i]
 		}
 
 		wtotal += weighted[i]
 		if weighted[i] > highestWeighted {
 			highestWeighted = weighted[i]
-			// highestWeightedFinger = FingerNames[i]
+			highestWeightedFinger = FingerNames[i]
 		}
 	}
 
 	analysis.WeightedFingerSpeed = weighted
 	analysis.UnweightedFingerSpeed = unweighted
-	analysis.WeightedHighestSpeed = highestWeighted     //highestWeightedFinger
-	analysis.UnweightedHighestSpeed = highestUnweighted //highestWeightedFinger
+
+	analysis.WeightedHighestSpeed.Value = highestWeighted
+	analysis.WeightedHighestSpeed.Finger = highestWeightedFinger
+	analysis.UnweightedHighestSpeed.Value = highestUnweighted
+	analysis.UnweightedHighestSpeed.Finger = highestUnweightedFinger
 
 	left, right := IndexUsage(layout)
 	analysis.LeftIndexUsage = left

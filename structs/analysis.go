@@ -17,10 +17,17 @@ type Analysis struct {
 	Onehands   float64 `json:"onehands"`
 	Redirects  float64 `json:"redirects"`
 
-	WeightedFingerSpeed    []float64 `json:"weightedFingerSpeed"`
-	UnweightedFingerSpeed  []float64 `json:"unweightedFingerSpeed"`
-	WeightedHighestSpeed   float64   `json:"weightedHighestSpeed"`
-	UnweightedHighestSpeed float64   `json:"unweightedHighestSpeed"`
+	WeightedFingerSpeed   []float64 `json:"weightedFingerSpeed"`
+	UnweightedFingerSpeed []float64 `json:"unweightedFingerSpeed"`
+
+	WeightedHighestSpeed struct {
+		Value  float64 `json:"value"`
+		Finger string  `json:"finger"`
+	} `json:"weightedHighestSpeed"`
+	UnweightedHighestSpeed struct {
+		Value  float64 `json:"value"`
+		Finger string  `json:"finger"`
+	} `json:"unweightedHighestSpeed"`
 
 	LeftIndexUsage  float64 `json:"leftIndexUsage"`
 	RightIndexUsage float64 `json:"rightIndexUsage"`
