@@ -187,7 +187,6 @@ func loadLayout(keys string, fingers string) Layout {
 			finger := Finger(fingerNum)
 			layout.Fingermatrix[Pos{Col: col, Row: row}] = finger
 			layout.Fingermap[finger] = append(layout.Fingermap[finger], Pos{Col: col, Row: row})
-
 		}
 		start += length
 	}
