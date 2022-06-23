@@ -156,12 +156,10 @@ func loadLayout(keys string, fingers string) Layout {
 	// row3 = 10
 
 	lengths := [3]int{13, 11, 10} //  length for each row
-
-	layout.Keys = make([][]string, 3)
-
-	start := 0 // start position of new row
+	start := 0                    // start position of new row
 	end := 0
 
+	layout.Keys = make([][]string, 3)
 	for row, length := range lengths {
 		end += length
 		// rune = code of char
@@ -174,7 +172,27 @@ func loadLayout(keys string, fingers string) Layout {
 		start += length
 	}
 
-	return Layout{}
+	layout.Fingermatrix = make(map[Pos]Finger, 3)
+	layout.Fingermap = make(map[Finger][]Pos)
+	for row, length := range lengths {
+		end += length
+		// rune = code of char
+		for col, rune := range fingers[start:end] {
+			fingerNum, err := strconv.Atoi(string(rune))
+
+			if err != nil {
+				// error
+			}
+
+			finger := Finger(fingerNum)
+			layout.Fingermatrix[Pos{Col: col, Row: row}] = finger
+			layout.Fingermap[finger] = append(layout.Fingermap[finger], Pos{Col: col, Row: row})
+
+		}
+		start += length
+	}
+
+	return layout
 }
 
 // load layout
