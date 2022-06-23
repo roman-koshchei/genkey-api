@@ -23,3 +23,14 @@ type FreqPair struct {
 	Ngram string  `json:"ngram"`
 	Count float64 `json:"count"`
 }
+
+type TrigramValues struct {
+	RightInwardRolls  int
+	RightOutwardRolls int
+	LeftInwardRolls   int
+	LeftOutwardRolls  int
+	Alternates        int
+	Onehands          int
+	Redirects         int
+	Total             int
+}

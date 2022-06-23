@@ -6,7 +6,7 @@ import (
 	. "github.com/roman-koshchei/genkey-api/structs"
 )
 
-var Data TextData
+var data TextData
 var isConfigLoaded bool = false
 
 // Analysis
@@ -80,7 +80,7 @@ func Analyze(keys string, fingers string) Analysis {
 	sfbs = sfbs[0:10]
 	// into percents
 	for i := 0; i < len(sfbs); i++ {
-		sfbs[i].Count = 100 * float64(sfbs[i].Count) / float64(Data.TotalBigrams)
+		sfbs[i].Count = 100 * float64(sfbs[i].Count) / float64(data.TotalBigrams)
 	}
 	analysis.TopSfbs = sfbs
 
@@ -88,7 +88,7 @@ func Analyze(keys string, fingers string) Analysis {
 	SortFreqList(worstBigrams)
 	worstBigrams = worstBigrams[0:10]
 	for i := 0; i < len(sfbs); i++ {
-		worstBigrams[i].Count = 100 * float64(worstBigrams[i].Count) / float64(Data.TotalBigrams)
+		worstBigrams[i].Count = 100 * float64(worstBigrams[i].Count) / float64(data.TotalBigrams)
 	}
 	analysis.WorstBigrams = worstBigrams
 
@@ -101,17 +101,8 @@ func Analyze(keys string, fingers string) Analysis {
 }
 
 func loadConfig() {
-
-	Data = loadData() // from text.go
+	data = loadData() // from text.go
 	loadWeights()     // from config.go
 
 	isConfigLoaded = true
-	// old loaded layouts
-	// we should return layout given to us
-	// Layouts = make(map[string]Layout)
-	// LoadLayoutDir()
-
-	// was
-	// checkLayoutProvided(args)
-	// PrintAnalysis(getLayout(args[1])) // args[1] = name of layout
 }

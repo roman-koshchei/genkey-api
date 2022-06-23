@@ -1,11 +1,7 @@
 package genkey
 
 import (
-	"fmt"
-	"io/ioutil"
 	"math"
-	"os"
-	"path/filepath"
 	"sort"
 	"strconv"
 	"strings"
@@ -13,147 +9,13 @@ import (
 	. "github.com/roman-koshchei/genkey-api/structs"
 )
 
-// type Pos struct {
-// 	Col int
-// 	Row int
-// }
-
-// type Pair [2]Pos
-// type Finger int
-
-// type Layout struct {
-// 	Name         string
-// 	Keys         [][]string
-// 	Keymap       map[string]Pos
-// 	Fingermatrix map[Pos]Finger
-// 	Fingermap    map[Finger][]Pos
-// 	Total        float64
-// }
-
-// don't know for what used
-// func MinimizeLayout(init *Layout, pins [][]string, count int, top bool, is33 bool, noCross bool) {
-// 	bestScore := Score(*init)
-// 	bestLayout := CopyLayout(*init)
-// 	var tot int
-// 	var r1len int
-// 	var r2len int
-// 	if is33 {
-// 		tot = 33
-// 		r1len = 12
-// 		r2len = 11
-// 	} else {
-// 		tot = 30
-// 		r1len = 10
-// 		r2len = 10
-// 	}
-// 	var foundBetter bool
-// 	for {
-// 		foundBetter = false
-// 		bestSoFarScore := bestScore
-// 		bestSoFarLayout := bestLayout
-
-// 		for i := 0; i < tot-1; i++ {
-// 			for j := i + 1; j < tot; j++ {
-// 				var irow int
-// 				var icol int
-// 				if i < r1len {
-// 					irow = 0
-// 				} else if i < (r1len + r2len) {
-// 					irow = 1
-// 				} else {
-// 					irow = 2
-// 				}
-// 				if i < r1len {
-// 					icol = i
-// 				} else if i < (r1len + r2len) {
-// 					icol = i - r1len
-// 				} else {
-// 					icol = i - (r1len + r2len)
-// 				}
-// 				var jrow int
-// 				var jcol int
-// 				if j < r1len {
-// 					jrow = 0
-// 				} else if j < (r1len + r2len) {
-// 					jrow = 1
-// 				} else {
-// 					jrow = 2
-// 				}
-// 				if j < r1len {
-// 					jcol = j
-// 				} else if j < (r1len + r2len) {
-// 					jcol = j - r1len
-// 				} else {
-// 					jcol = j - (r1len + r2len)
-// 				}
-// 				if noCross {
-// 					if !((icol <= 4 && jcol <= 4) || (icol >= 5 && jcol >= 5)) {
-// 						continue
-// 					}
-// 				}
-// 				pi := pins[irow][icol]
-// 				pj := pins[jrow][jcol]
-// 				if pi == "#" || pj == "#" {
-// 					continue
-// 				}
-// 				swapped := CopyLayout(bestLayout)
-// 				ki := swapped.Keys[irow][icol]
-// 				kj := swapped.Keys[jrow][jcol]
-// 				if pi == ki || pi == kj || pj == ki || pj == kj {
-// 					continue
-// 				}
-
-// 				// NewKeys := make([][]string, len(bestLayout.Keys))
-// 				// for k := range bestLayout.Keys {
-// 				// 	NewKeys[k] = make([]string, len(bestLayout.Keys[k]))
-// 				// 	copy(NewKeys[k], bestLayout.Keys[k])
-// 				// }
-// 				// swapped.Keys = NewKeys
-// 				Swap(&swapped, swapped.Keymap[ki], swapped.Keymap[kj])
-// 				// tmp := swapped.Keys[irow][icol]
-// 				//fmt.Printf("< %s\n", swapped.Keys[irow][icol])
-// 				//fmt.Printf("- %s\n", swapped.Keys[jrow][jcol])
-// 				// swapped.Keys[irow][icol] = swapped.Keys[jrow][jcol]
-// 				//fmt.Printf("> %s\n", swapped.Keys[irow][icol])
-// 				// swapped.Keys[jrow][jcol] = tmp
-// 				var swappedScore float64
-// 				if count != 0 {
-// 					MinimizeLayout(&swapped, pins, count-1, false, is33, noCross)
-// 					recBestScore := Score(swapped)
-// 					if recBestScore < bestSoFarScore {
-// 						bestSoFarScore = recBestScore
-// 						bestSoFarLayout = swapped
-// 						foundBetter = true
-// 					}
-// 				}
-// 				swappedScore = Score(swapped)
-// 				if swappedScore < bestSoFarScore {
-// 					bestSoFarScore = swappedScore
-// 					bestSoFarLayout = swapped
-// 					foundBetter = true
-// 				}
-// 			}
-// 		}
-// 		if bestSoFarScore < bestScore {
-// 			bestScore = bestSoFarScore
-// 			bestLayout = bestSoFarLayout
-// 		}
-// 		if !foundBetter {
-// 			break
-// 		}
-// 	}
-// 	*init = bestLayout
-//  }
-
+// make layout from for example:
+// keys = qwertyuiop[]\asdfghjkl;'zxcvbnm,./
+// fingers= 0123344567777012334456770123344567
 func loadLayout(keys string, fingers string) Layout {
 	var layout Layout
 
-	// keys= qwertyuiop[]\asdfghjkl;'zxcvbnm,./
-	// fingers= 0123344567777012334456770123344567
-
-	// row1 = 13
-	// row2 = 11
-	// row3 = 10
+	// topRowLength = 13, homeRowLength = 11 bottomRowLength = 10
 
 	lengths := [3]int{13, 11, 10} //  length for each row
 	start := 0                    // start position of new row
@@ -167,7 +29,7 @@ func loadLayout(keys string, fingers string) Layout {
 			key := strings.ToLower(string(rune))
 
 			layout.Keys[row] = append(layout.Keys[row], key)
-			layout.Total += float64(Data.Letters[key])
+			layout.Total += float64(data.Letters[key])
 		}
 		start += length
 	}
@@ -194,112 +56,12 @@ func loadLayout(keys string, fingers string) Layout {
 		start += length
 	}
 
-	layout.Keymap = GenKeymap(layout.Keys) // md delete
+	layout.Keymap = GenKeymap(layout.Keys) // need
 
 	return layout
 }
 
-// load layout
-// need to rewrite
-func LoadLayoutOld(f string) Layout {
-	var l Layout
-	b, err := ioutil.ReadFile(f)
-	if err != nil {
-		panic(err)
-	}
-
-	s := string(b)
-	lines := strings.Split(s, "\n") // split rows // rewrite
-	if len(lines) < 7 {
-		fmt.Printf("WARNING: Layout in file %s is formatted incorrectly, ignoring\n", f)
-		return Layout{}
-	}
-	l.Name = strings.TrimSpace(lines[0])
-	l.Keys = make([][]string, 3) // init space for keys
-	keys := lines[1:4]           // get only rows with keys
-	for line := range keys {
-		separated := true
-		for _, rune := range keys[line] { // rune = each key
-			c := string(rune)
-			c = strings.ToLower(c)
-			if c == " " {
-				separated = true
-				continue
-			} else if !separated {
-				continue
-			} else {
-				separated = false
-				l.Keys[line] = append(l.Keys[line], c)
-				l.Total += float64(Data.Letters[c])
-			}
-		}
-	}
-	l.Fingermatrix = make(map[Pos]Finger, 3)
-	l.Fingermap = make(map[Finger][]Pos)
-	for y, row := range lines[4:7] { // fingers
-		separated := true
-
-		tx := 0
-		for _, c := range strings.Split(strings.TrimSpace(row), "") {
-			if c == " " {
-				separated = true
-				continue
-			} else if !separated {
-				continue
-			}
-			n, err := strconv.Atoi(c)
-			if err != nil {
-				fmt.Printf("%s layout fingermatrix is badly formatted!\n", f)
-				fmt.Println(err)
-				return l
-			}
-			separated = false
-			fg := Finger(n)
-			l.Fingermatrix[Pos{Col: tx, Row: y}] = fg
-			l.Fingermap[fg] = append(l.Fingermap[fg], Pos{Col: tx, Row: y})
-			tx++
-		}
-	}
-
-	l.Keymap = GenKeymap(l.Keys)
-
-	return l
-}
-
-// load layouts
-func LoadLayoutDir() {
-	dir, err := os.Open("layouts")
-	if err != nil {
-		fmt.Println("Please make sure there is a folder called 'layouts' in this directory!")
-		panic(err)
-	}
-	files, _ := dir.Readdirnames(0)
-	for _, f := range files {
-		l := LoadLayoutOld(filepath.Join("layouts", f))
-		if l.Name == "" {
-			continue
-		}
-		if !strings.HasPrefix(f, "_") {
-			Layouts[strings.ToLower(l.Name)] = l
-		} else {
-			GeneratedFingermap = l.Fingermap
-			GeneratedFingermatrix = l.Fingermatrix
-			for y, row := range l.Keys {
-				for x, k := range row {
-					if k == "*" {
-						SwapPossibilities = append(SwapPossibilities, Pos{Col: x, Row: y})
-					}
-				}
-			}
-		}
-	}
-}
-
-// func NewLayout(name string, keys string) Layout {
-// 	s := strings.Split(keys, "")
-// 	return Layout{name, s, GenKeymap(s), FingerMap}
-// }
-
+// +
 func GenKeymap(keys [][]string) map[string]Pos {
 	keymap := make(map[string]Pos)
 	for y, row := range keys {
@@ -310,6 +72,7 @@ func GenKeymap(keys [][]string) map[string]Pos {
 	return keymap
 }
 
+// +
 func FingerSpeed(l *Layout, weighted bool) []float64 {
 	speeds := []float64{0, 0, 0, 0, 0, 0, 0, 0}
 	sfbweight := Weight.FSpeed.SFB
@@ -322,11 +85,11 @@ func FingerSpeed(l *Layout, weighted bool) []float64 {
 				k1 := &l.Keys[p1.Row][p1.Col]
 				k2 := &l.Keys[p2.Row][p2.Col]
 
-				sfb := float64(Data.Bigrams[*k1+*k2])
-				dsfb := Data.Skipgrams[*k1+*k2]
+				sfb := float64(data.Bigrams[*k1+*k2])
+				dsfb := data.Skipgrams[*k1+*k2]
 				if i != j {
-					sfb += float64(Data.Bigrams[*k2+*k1])
-					dsfb += Data.Skipgrams[*k2+*k1]
+					sfb += float64(data.Bigrams[*k2+*k1])
+					dsfb += data.Skipgrams[*k2+*k1]
 				}
 
 				dist := twoKeyDist(*p1, *p2, true) + (2 * Weight.FSpeed.KeyTravel)
@@ -341,6 +104,7 @@ func FingerSpeed(l *Layout, weighted bool) []float64 {
 	return speeds
 }
 
+// if add dynamic flag
 func DynamicFingerSpeed(l *Layout, weighted bool) []float64 {
 	speeds := []float64{0, 0, 0, 0, 0, 0, 0, 0}
 	sfbweight := Weight.FSpeed.SFB
@@ -357,8 +121,8 @@ func DynamicFingerSpeed(l *Layout, weighted bool) []float64 {
 				k1 := &l.Keys[p1.Row][p1.Col]
 				k2 := &l.Keys[p2.Row][p2.Col]
 
-				sfb := float64(Data.Bigrams[*k1+*k2])
-				dsfb := Data.Skipgrams[*k1+*k2]
+				sfb := float64(data.Bigrams[*k1+*k2])
+				dsfb := data.Skipgrams[*k1+*k2]
 
 				dist := twoKeyDist(*p1, *p2, true) + (2 * Weight.FSpeed.KeyTravel)
 				speed := ((sfbweight * sfb) + (dsfbweight * dsfb)) * dist
@@ -382,6 +146,7 @@ func DynamicFingerSpeed(l *Layout, weighted bool) []float64 {
 	return speeds
 }
 
+// +
 func SFBs(l Layout, skipgrams bool) float64 {
 	var count float64
 	for _, posits := range l.Fingermap {
@@ -395,9 +160,9 @@ func SFBs(l Layout, skipgrams bool) float64 {
 				k1 := &l.Keys[p1.Row][p1.Col]
 				k2 := &l.Keys[p2.Row][p2.Col]
 				if !skipgrams {
-					count += float64(Data.Bigrams[*k1+*k2] + Data.Bigrams[*k2+*k1])
+					count += float64(data.Bigrams[*k1+*k2] + data.Bigrams[*k2+*k1])
 				} else {
-					count += Data.Skipgrams[*k1+*k2] + Data.Skipgrams[*k2+*k1]
+					count += data.Skipgrams[*k1+*k2] + data.Skipgrams[*k2+*k1]
 				}
 			}
 		}
@@ -405,6 +170,7 @@ func SFBs(l Layout, skipgrams bool) float64 {
 	return count
 }
 
+// if add dynamic flag
 func DynamicSFBs(l Layout) float64 {
 	var count float64
 	for _, posits := range l.Fingermap {
@@ -418,7 +184,7 @@ func DynamicSFBs(l Layout) float64 {
 				p2 := &posits[j]
 				k1 := &l.Keys[p1.Row][p1.Col]
 				k2 := &l.Keys[p2.Row][p2.Col]
-				sfb := float64(Data.Bigrams[*k1+*k2])
+				sfb := float64(data.Bigrams[*k1+*k2])
 				if sfb > highest {
 					highest = sfb
 				}
@@ -430,12 +196,14 @@ func DynamicSFBs(l Layout) float64 {
 	return count
 }
 
+// +
 func SortFreqList(pairs []FreqPair) {
 	sort.Slice(pairs, func(i, j int) bool {
 		return pairs[i].Count > pairs[j].Count
 	})
 }
 
+// +
 func ListSFBs(l Layout, skipgrams bool) []FreqPair {
 	var list []FreqPair
 	for _, posits := range l.Fingermap {
@@ -455,9 +223,9 @@ func ListSFBs(l Layout, skipgrams bool) []FreqPair {
 				var count float64
 				ngram := *k1 + *k2
 				if !skipgrams {
-					count = float64(Data.Bigrams[ngram])
+					count = float64(data.Bigrams[ngram])
 				} else {
-					count = Data.Skipgrams[ngram]
+					count = data.Skipgrams[ngram]
 				}
 				list = append(list, FreqPair{Ngram: ngram, Count: count})
 			}
@@ -467,6 +235,7 @@ func ListSFBs(l Layout, skipgrams bool) []FreqPair {
 	return list
 }
 
+// if add dynamic flag
 func ListDynamic(l Layout) ([]FreqPair, []FreqPair) {
 	sfbs := ListSFBs(l, false)
 	SortFreqList(sfbs)
@@ -486,6 +255,7 @@ func ListDynamic(l Layout) ([]FreqPair, []FreqPair) {
 	return escaped, real
 }
 
+// +
 func ListWorstBigrams(l Layout) []FreqPair {
 	var bigrams []FreqPair
 	sfbweight := Weight.FSpeed.SFB
@@ -497,11 +267,11 @@ func ListWorstBigrams(l Layout) []FreqPair {
 				p2 := &posits[j]
 				k1 := &l.Keys[p1.Row][p1.Col]
 				k2 := &l.Keys[p2.Row][p2.Col]
-				sfb := float64(Data.Bigrams[*k1+*k2])
-				dsfb := Data.Skipgrams[*k1+*k2]
+				sfb := float64(data.Bigrams[*k1+*k2])
+				dsfb := data.Skipgrams[*k1+*k2]
 				if i != j {
-					sfb += float64(Data.Bigrams[*k2+*k1])
-					dsfb += Data.Skipgrams[*k2+*k1]
+					sfb += float64(data.Bigrams[*k2+*k1])
+					dsfb += data.Skipgrams[*k2+*k1]
 				}
 
 				dist := twoKeyDist(*p1, *p2, true) + (2 * Weight.FSpeed.KeyTravel)
@@ -513,28 +283,18 @@ func ListWorstBigrams(l Layout) []FreqPair {
 	return bigrams
 }
 
-type TrigramValues struct {
-	RightInwardRolls  int
-	RightOutwardRolls int
-	LeftInwardRolls   int
-	LeftOutwardRolls  int
-	Alternates        int
-	Onehands          int
-	Redirects         int
-	Total             int
-}
-
 // FastTrigrams approximates trigram counts with a given precision
 // (precision=0 gives full data). It returns a count of {rolls,
 // alternates, onehands, redirects, total}
+// +
 func FastTrigrams(l Layout, precision int) TrigramValues {
 	var tgs TrigramValues
 
 	if precision == 0 {
-		precision = len(Data.TopTrigrams)
+		precision = len(data.TopTrigrams)
 	}
 
-	for _, tg := range Data.TopTrigrams[:precision] {
+	for _, tg := range data.TopTrigrams[:precision] {
 		km1, ok1 := l.Keymap[string(tg.Ngram[0])]
 		km2, ok2 := l.Keymap[string(tg.Ngram[1])]
 		km3, ok3 := l.Keymap[string(tg.Ngram[2])]
@@ -601,22 +361,24 @@ func FastTrigrams(l Layout, precision int) TrigramValues {
 	return tgs
 }
 
+// +
 func IndexUsage(l Layout) (float64, float64) {
 	left := 0
 	right := 0
 
 	for _, pos := range l.Fingermap[3] {
 		key := l.Keys[pos.Row][pos.Col]
-		left += Data.Letters[key]
+		left += data.Letters[key]
 	}
 	for _, pos := range l.Fingermap[4] {
 		key := l.Keys[pos.Row][pos.Col]
-		right += Data.Letters[key]
+		right += data.Letters[key]
 	}
 
 	return (100 * float64(left) / l.Total), (100 * float64(right) / l.Total)
 }
 
+// +
 func LSBs(l Layout) int {
 	var count int
 
@@ -632,8 +394,8 @@ func LSBs(l Layout) int {
 			if dist >= 2 {
 				k1 := l.Keys[p1.Row][p1.Col]
 				k2 := l.Keys[p2.Row][p2.Col]
-				count += Data.Bigrams[k1+k2]
-				count += Data.Bigrams[k2+k1]
+				count += data.Bigrams[k1+k2]
+				count += data.Bigrams[k2+k1]
 			}
 		}
 	}
@@ -650,8 +412,8 @@ func LSBs(l Layout) int {
 			if dist >= 2 {
 				k1 := l.Keys[p1.Row][p1.Col]
 				k2 := l.Keys[p2.Row][p2.Col]
-				count += Data.Bigrams[k1+k2]
-				count += Data.Bigrams[k2+k1]
+				count += data.Bigrams[k1+k2]
+				count += data.Bigrams[k2+k1]
 			}
 		}
 	}
@@ -668,8 +430,8 @@ func LSBs(l Layout) int {
 			if dist >= 2 {
 				k1 := l.Keys[p1.Row][p1.Col]
 				k2 := l.Keys[p2.Row][p2.Col]
-				count += Data.Bigrams[k1+k2]
-				count += Data.Bigrams[k2+k1]
+				count += data.Bigrams[k1+k2]
+				count += data.Bigrams[k2+k1]
 			}
 		}
 	}
@@ -686,8 +448,8 @@ func LSBs(l Layout) int {
 			if dist >= 2 {
 				k1 := l.Keys[p1.Row][p1.Col]
 				k2 := l.Keys[p2.Row][p2.Col]
-				count += Data.Bigrams[k1+k2]
-				count += Data.Bigrams[k2+k1]
+				count += data.Bigrams[k1+k2]
+				count += data.Bigrams[k2+k1]
 			}
 		}
 	}
@@ -707,8 +469,8 @@ func ListLSBs(l Layout) []FreqPair {
 			if dist >= 2 {
 				k1 := l.Keys[p1.Row][p1.Col]
 				k2 := l.Keys[p2.Row][p2.Col]
-				list = append(list, FreqPair{Ngram: k1 + k2, Count: float64(Data.Bigrams[k1+k2])})
-				list = append(list, FreqPair{Ngram: k2 + k1, Count: float64(Data.Bigrams[k2+k1])})
+				list = append(list, FreqPair{Ngram: k1 + k2, Count: float64(data.Bigrams[k1+k2])})
+				list = append(list, FreqPair{Ngram: k2 + k1, Count: float64(data.Bigrams[k2+k1])})
 			}
 		}
 	}
@@ -724,105 +486,15 @@ func ListLSBs(l Layout) []FreqPair {
 			if dist >= 2 {
 				k1 := l.Keys[p1.Row][p1.Col]
 				k2 := l.Keys[p2.Row][p2.Col]
-				list = append(list, FreqPair{Ngram: k1 + k2, Count: float64(Data.Bigrams[k1+k2])})
-				list = append(list, FreqPair{Ngram: k2 + k1, Count: float64(Data.Bigrams[k2+k1])})
+				list = append(list, FreqPair{Ngram: k1 + k2, Count: float64(data.Bigrams[k1+k2])})
+				list = append(list, FreqPair{Ngram: k2 + k1, Count: float64(data.Bigrams[k2+k1])})
 			}
 		}
 	}
 	return list
 }
 
-func ColRow(pos int) (int, int) {
-	var col int
-	var row int
-	if pos < 10 {
-		col = pos
-		row = 0
-	} else if pos < 20 {
-		col = pos - 10
-		row = 1
-	} else if pos < 30 {
-		col = pos - 20
-		row = 2
-	}
-
-	return col, row
-}
-
-func Similarity(a, b []string) int {
-	var score int
-	for i := 0; i < 30; i++ {
-		weight := 1
-		if i >= 10 && i <= 13 {
-			weight = 2
-		} else if i >= 16 && i <= 19 {
-			weight = 2
-		}
-		if a[i] == b[i] {
-			score += weight
-		}
-	}
-	return score
-}
-
-func DuplicatesAndMissing(l Layout) ([]string, []string) {
-	counts := make(map[string]int)
-	// collect counts of each key
-	for _, row := range l.Keys {
-		for _, c := range row {
-			counts[c] += 1
-		}
-	}
-	// then check duplicates and missing
-	duplicates := make([]string, 0)
-	missing := make([]string, 0)
-	for _, r := range []rune("abcdefghijklmnopqrstuvwxyz,./;'") {
-		c := string(r)
-		if counts[c] == 0 {
-			missing = append(missing, c)
-		} else if counts[c] > 1 {
-			duplicates = append(duplicates, c)
-		}
-	}
-	return duplicates, missing
-}
-
-func staggeredX(c, r int) float64 {
-	var sx float64
-	if r == 0 {
-		sx = float64(c) - 0.25
-	} else if r == 2 {
-		sx = float64(c) + 0.5
-	} else {
-		sx = float64(c)
-	}
-	return sx
-}
-
-func twoKeyDist(a, b Pos, weighted bool) float64 {
-	var ax float64
-	var bx float64
-
-	if StaggerFlag {
-		ax = staggeredX(a.Col, a.Row)
-		bx = staggeredX(b.Col, b.Row)
-	} else {
-		ax = float64(a.Col)
-		bx = float64(b.Col)
-	}
-
-	x := ax - bx
-	y := float64(a.Row - b.Row)
-
-	var dist float64
-	if weighted {
-		dist = (Weight.Dist.Lateral * x * x) + (y * y)
-	} else {
-		dist = math.Sqrt((x * x) + (y * y))
-	}
-	return dist
-}
-
+// Count total score of layout
 func Score(l Layout) float64 {
 	var score float64
 	s := &Weight.Score
@@ -858,7 +530,101 @@ func Score(l Layout) float64 {
 		score += s.IndexBalance * math.Abs(right-left)
 	}
 
-	Analyzed++
-
 	return score
+}
+
+// unnesasery now
+func ColRow(pos int) (int, int) {
+	var col int
+	var row int
+	if pos < 10 {
+		col = pos
+		row = 0
+	} else if pos < 20 {
+		col = pos - 10
+		row = 1
+	} else if pos < 30 {
+		col = pos - 20
+		row = 2
+	}
+
+	return col, row
+}
+
+// unnesasery now
+func Similarity(a, b []string) int {
+	var score int
+	for i := 0; i < 30; i++ {
+		weight := 1
+		if i >= 10 && i <= 13 {
+			weight = 2
+		} else if i >= 16 && i <= 19 {
+			weight = 2
+		}
+		if a[i] == b[i] {
+			score += weight
+		}
+	}
+	return score
+}
+
+// unnesasery now
+func DuplicatesAndMissing(l Layout) ([]string, []string) {
+	counts := make(map[string]int)
+	// collect counts of each key
+	for _, row := range l.Keys {
+		for _, c := range row {
+			counts[c] += 1
+		}
+	}
+	// then check duplicates and missing
+	duplicates := make([]string, 0)
+	missing := make([]string, 0)
+	for _, r := range []rune("abcdefghijklmnopqrstuvwxyz,./;'") {
+		c := string(r)
+		if counts[c] == 0 {
+			missing = append(missing, c)
+		} else if counts[c] > 1 {
+			duplicates = append(duplicates, c)
+		}
+	}
+	return duplicates, missing
+}
+
+// unnesasery now
+func staggeredX(c, r int) float64 {
+	var sx float64
+	if r == 0 {
+		sx = float64(c) - 0.25
+	} else if r == 2 {
+		sx = float64(c) + 0.5
+	} else {
+		sx = float64(c)
+	}
+	return sx
+}
+
+// unnesasery now
+func twoKeyDist(a, b Pos, weighted bool) float64 {
+	var ax float64
+	var bx float64
+
+	if StaggerFlag {
+		ax = staggeredX(a.Col, a.Row)
+		bx = staggeredX(b.Col, b.Row)
+	} else {
+		ax = float64(a.Col)
+		bx = float64(b.Col)
+	}
+
+	x := ax - bx
+	y := float64(a.Row - b.Row)
+
+	var dist float64
+	if weighted {
+		dist = (Weight.Dist.Lateral * x * x) + (y * y)
+	} else {
+		dist = math.Sqrt((x * x) + (y * y))
+	}
+	return dist
 }
