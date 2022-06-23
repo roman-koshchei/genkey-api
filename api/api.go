@@ -31,7 +31,11 @@ func getAnalysis(c *gin.Context) {
 }
 
 func Run() {
-	router := gin.Default()
+	gin.SetMode(gin.ReleaseMode)
+
+	router := gin.New()
+	router.Use(gin.Recovery()) // if panic return 500
+
 	router.GET("/", getAnalysis) // was :keys:fingers
-	router.Run("localhost:8080") // localhost:8080 = tmp
+	router.Run(":8080")
 }
