@@ -9,13 +9,18 @@ import (
 var data TextData
 var isConfigLoaded bool = false
 
-// Analysis
-func Analyze(keys string, fingers string) Analysis {
+// public function that should be called from api
+func Analyze(keys []string, fingers []string) Analysis {
 	if !isConfigLoaded {
 		loadConfig()
 	}
 
 	layout := loadLayout(keys, fingers)
+
+	return analyzeLayout(layout)
+}
+
+func analyzeLayout(layout Layout) Analysis {
 	var analysis Analysis
 
 	ftri := FastTrigrams(layout, 0)
@@ -94,10 +99,7 @@ func Analyze(keys string, fingers string) Analysis {
 
 	analysis.Score = Score(layout)
 
-	//fmt.Println("Top SFBs:")
-	//PrintFreqList(sfbs, 8, true)
-
-	return analysis // tmp
+	return analysis
 }
 
 func loadConfig() {

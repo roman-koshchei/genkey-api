@@ -12,36 +12,24 @@ import (
 // make layout from for example:
 // keys = qwertyuiop[]\asdfghjkl;'zxcvbnm,./
 // fingers= 0123344567777012334456770123344567
-func loadLayout(keys string, fingers string) Layout {
+func loadLayout(keyRows []string, fingerRows []string) Layout {
 	var layout Layout
 
-	// topRowLength = 13, homeRowLength = 11 bottomRowLength = 10
-
-	lengths := [3]int{13, 11, 10} //  length for each row
-	start := 0                    // start position of new row
-	end := 0
-
 	layout.Keys = make([][]string, 3)
-	for row, length := range lengths {
-		end += length
-		// rune = code of char
-		for _, rune := range keys[start:end] {
+	for i, keyRow := range keyRows {
+		for _, rune := range keyRow {
 			key := strings.ToLower(string(rune))
 
-			layout.Keys[row] = append(layout.Keys[row], key)
+			layout.Keys[i] = append(layout.Keys[i], key)
 			layout.Total += float64(data.Letters[key])
 		}
-		start += length
 	}
 
-	start = 0
-	end = 0
 	layout.Fingermatrix = make(map[Pos]Finger, 3)
 	layout.Fingermap = make(map[Finger][]Pos)
-	for row, length := range lengths {
-		end += length
-		// rune = code of char
-		for col, rune := range fingers[start:end] {
+	for rowIndex, fingerRow := range fingerRows {
+		for colIndex, rune := range fingerRow {
+
 			fingerNum, err := strconv.Atoi(string(rune))
 
 			if err != nil {
@@ -49,10 +37,9 @@ func loadLayout(keys string, fingers string) Layout {
 			}
 
 			finger := Finger(fingerNum)
-			layout.Fingermatrix[Pos{Col: col, Row: row}] = finger
-			layout.Fingermap[finger] = append(layout.Fingermap[finger], Pos{Col: col, Row: row})
+			layout.Fingermatrix[Pos{Col: colIndex, Row: rowIndex}] = finger
+			layout.Fingermap[finger] = append(layout.Fingermap[finger], Pos{Col: colIndex, Row: rowIndex})
 		}
-		start += length
 	}
 
 	layout.Keymap = GenKeymap(layout.Keys) // need
