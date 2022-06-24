@@ -9,7 +9,7 @@ import (
 )
 
 func Run() {
-	//gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.ReleaseMode)
 
 	router := gin.New()
 	router.Use(gin.Recovery()) // if panic return 500
@@ -22,8 +22,7 @@ func Run() {
 		port = "8080"
 	}
 
-	//router.Run(":" + port)
-	router.Run("localhost:8080")
+	router.Run(":" + port)
 }
 
 // qwerty ask example
