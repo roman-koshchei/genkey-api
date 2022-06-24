@@ -20,7 +20,7 @@ Query parameters:
 
 QWERTY example:
 
-`/divided/?topKeys=qwertyuiop&homeKeys=asdfghjkl%3B%27&botKeys=zxcvbnm,./&topFingers=0123344567&homeFingers=01233445677&botFingers=0123344567`
+<https://genkey-api.herokuapp.com/divided/?topKeys=qwertyuiop&homeKeys=asdfghjkl%3B%27&botKeys=zxcvbnm,./&topFingers=0123344567&homeFingers=01233445677&botFingers=0123344567>
 
 
 ## Path '/'
@@ -31,4 +31,4 @@ Query parameters:
 
 QWERTY example:
 
-`/?keys=qwertyuiop[]\asdfghjkl%3B%27zxcvbnm,./&fingers=0123344567777012334456770123344567`
+<https://genkey-api.herokuapp.com/?keys=qwertyuiop[]\asdfghjkl%3B%27zxcvbnm,./&fingers=0123344567777012334456770123344567>
