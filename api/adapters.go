@@ -1,8 +1,8 @@
-package genkey
+package api
 
 // get key rows and finger rows
 // from strings that contain all keys
-func RowsFromTogether(keys string, fingers string) ([]string, []string) {
+func rowsFromTogether(keys string, fingers string) ([]string, []string) {
 	var keyRows []string
 	var fingerRows []string
 
@@ -29,6 +29,6 @@ func RowsFromTogether(keys string, fingers string) ([]string, []string) {
 }
 
 // top, home, bot = rows
-func RowsFormDivided(topKeys string, homeKeys string, botKeys string, topFingers string, homeFingers string, botFingers string) ([]string, []string) {
+func rowsFormDivided(topKeys string, homeKeys string, botKeys string, topFingers string, homeFingers string, botFingers string) ([]string, []string) {
 	return []string{topKeys, homeKeys, botKeys}, []string{topFingers, homeFingers, botFingers}
 }

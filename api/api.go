@@ -23,6 +23,7 @@ func Run() {
 	}
 
 	router.Run(":" + port)
+	//router.Run("localhost:8080")
 }
 
 // qwerty ask example
@@ -46,7 +47,7 @@ func getDivided(c *gin.Context) {
 		return
 	}
 
-	analysis := genkey.Analyze(genkey.RowsFormDivided(topKeys, homeKeys, botKeys, topFingers, homeFingers, botFingers))
+	analysis := genkey.Analyze(rowsFormDivided(topKeys, homeKeys, botKeys, topFingers, homeFingers, botFingers))
 
 	c.JSON(http.StatusOK, analysis)
 }
@@ -69,7 +70,7 @@ func getTogether(c *gin.Context) {
 		return
 	}
 
-	analysis := genkey.Analyze(genkey.RowsFromTogether(keys, fingers))
+	analysis := genkey.Analyze(rowsFromTogether(keys, fingers))
 
 	c.JSON(http.StatusOK, analysis)
 }
