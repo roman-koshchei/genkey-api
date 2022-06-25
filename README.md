@@ -1,5 +1,11 @@
 # Genkey API
 
+![GitHub](https://img.shields.io/github/license/roman-koshchei/genkey-api?color=%2300add8)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/roman-koshchei/genkey-api?color=%2300add8)
+![GitHub Release Date](https://img.shields.io/github/release-date/roman-koshchei/genkey-api?color=%2300add8)
+![GitHub last commit](https://img.shields.io/github/last-commit/roman-koshchei/genkey-api?color=%2300add8)
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/roman-koshchei/genkey-api?color=%2300add8)
+
 API for [genkey analyzer](https://github.com/semilin/genkey) made by @semilin. Get layout analysis from api as a json. Used Gin framework.
 
 
