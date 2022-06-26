@@ -9,12 +9,17 @@ import (
 )
 
 func Run() {
-	gin.SetMode(gin.ReleaseMode)
+	//	gin.SetMode(gin.ReleaseMode)
 
 	router := gin.New()
+
+	router.StaticFile("/output.svg", "./guide/output.svg")
+	router.LoadHTMLGlob("guide/*.html")
+
 	router.Use(gin.Recovery()) // if panic return 500
 
-	router.GET("/", getTogether)
+	router.GET("/", getGuide)
+	router.GET("/together/", getTogether)
 	router.GET("/divided/", getDivided)
 
 	port := os.Getenv("PORT")
@@ -22,8 +27,12 @@ func Run() {
 		port = "8080"
 	}
 
-	router.Run(":" + port)
-	//router.Run("localhost:8080")
+	//	router.Run(":" + port)
+	router.Run("localhost:8080")
+}
+
+func getGuide(c *gin.Context) {
+	c.HTML(http.StatusOK, "index.html", nil)
 }
 
 // qwerty ask example
