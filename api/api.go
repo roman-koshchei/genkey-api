@@ -9,7 +9,7 @@ import (
 )
 
 func Run() {
-	//	gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.ReleaseMode)
 
 	router := gin.New()
 
@@ -27,8 +27,8 @@ func Run() {
 		port = "8080"
 	}
 
-	//	router.Run(":" + port)
-	router.Run("localhost:8080")
+	router.Run(":" + port)
+	//router.Run("localhost:8080")
 }
 
 func getGuide(c *gin.Context) {
