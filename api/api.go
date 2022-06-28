@@ -39,6 +39,8 @@ func getGuide(c *gin.Context) {
 // /divided/?topKeys=qwertyuiop[]\&homeKeys=asdfghjkl%3B%27&botKeys=zxcvbnm,./&topFingers=0123344567777&homeFingers=01233445677&botFingers=0123344567
 // /divided/?topKeys=qwertyuiop&homeKeys=asdfghjkl%3B%27&botKeys=zxcvbnm,./&topFingers=0123344567&homeFingers=01233445677&botFingers=0123344567
 func getDivided(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+
 	topKeys := c.Query("topKeys")
 	homeKeys := c.Query("homeKeys")
 	botKeys := c.Query("botKeys")
@@ -66,6 +68,8 @@ func getDivided(c *gin.Context) {
 // ; must be %3B
 // example: ...?keys=qwertyuiop%5B%5Dasdfghjkl%3B%27zxcvbnm%2C.%2F&fingers=...
 func getTogether(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+
 	keys := c.Query("keys")
 	fingers := c.Query("fingers")
 
