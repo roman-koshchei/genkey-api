@@ -1,6 +1,6 @@
 package genkey
 
-import . "github.com/roman-koshchei/genkey-api/structs"
+import . "github.com/paragoda/genkey-api/structs"
 
 // global variables for genkey working
 // TODO: delete unnesessary

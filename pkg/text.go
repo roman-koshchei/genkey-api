@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"os"
 
-	. "github.com/roman-koshchei/genkey-api/structs"
+	. "github.com/paragoda/genkey-api/structs"
 )
 
 func loadData() TextData {

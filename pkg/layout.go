@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	. "github.com/roman-koshchei/genkey-api/structs"
+	. "github.com/paragoda/genkey-api/structs"
 )
 
 // make layout from for example:

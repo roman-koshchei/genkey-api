@@ -1,6 +1,6 @@
 package main
 
-import "github.com/roman-koshchei/genkey-api/api"
+import "github.com/paragoda/genkey-api/api"
 
 func main() {
 	api.Run()

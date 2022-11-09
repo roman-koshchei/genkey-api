@@ -1,4 +1,4 @@
-module github.com/roman-koshchei/genkey-api
+module github.com/paragoda/genkey-api
 
 go 1.18
 

@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	genkey "github.com/roman-koshchei/genkey-api/pkg"
+	genkey "github.com/paragoda/genkey-api/pkg"
 )
 
 func Run() {

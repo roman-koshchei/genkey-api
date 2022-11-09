@@ -3,7 +3,7 @@ package genkey
 // mian file for genkey
 
 import (
-	. "github.com/roman-koshchei/genkey-api/structs"
+	. "github.com/paragoda/genkey-api/structs"
 )
 
 var data TextData
