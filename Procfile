@@ -1,1 +1,1 @@
-web: bin/genkey-api
+web: genkey-api
