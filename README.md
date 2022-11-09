@@ -26,7 +26,7 @@ Query parameters:
 
 QWERTY example:
 
-<https://genkey-api.herokuapp.com/divided/?topKeys=qwertyuiop&homeKeys=asdfghjkl%3B%27&botKeys=zxcvbnm,./&topFingers=0123344567&homeFingers=01233445677&botFingers=0123344567>
+<https://genkey.up.railway.app/divided/?topKeys=qwertyuiop&homeKeys=asdfghjkl%3B%27&botKeys=zxcvbnm,./&topFingers=0123344567&homeFingers=01233445677&botFingers=0123344567>
 
 
 ## Path '/together/'
@@ -37,4 +37,4 @@ Query parameters:
 
 QWERTY example:
 
-<https://genkey-api.herokuapp.com/together/?keys=qwertyuiop[]\asdfghjkl%3B%27zxcvbnm,./&fingers=0123344567777012334456770123344567>
+<https://genkey.up.railway.app/together/?keys=qwertyuiop[]\asdfghjkl%3B%27zxcvbnm,./&fingers=0123344567777012334456770123344567>
