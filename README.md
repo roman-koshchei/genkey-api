@@ -8,7 +8,6 @@
 
 API for [genkey analyzer](https://github.com/semilin/genkey). Get layout analysis from api as a json. Used Gin framework. Yeah
 
-
 ## Rules
 
 Input url must be formatted with url encoder, which replace ';' to '%3B'. Or just do it yourself. In javascript use encodeUriComponent()
